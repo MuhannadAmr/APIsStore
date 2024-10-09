@@ -1,4 +1,5 @@
 ﻿using Store.DEMO.Core.Entites;
+using Store.DEMO.Core.Specifications;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,10 @@ namespace Store.DEMO.Core.Repositories.Contract
     {
         Task<IEnumerable<TEntity>> GetAllAsync();
         Task<TEntity> GetAsync(TKey id);
+
+        Task<IEnumerable<TEntity>> GetAllWithSpecAsync(ISpecifications<TEntity, TKey> spec);
+        Task<TEntity> GetWithSpecAsync(ISpecifications<TEntity, TKey> spec);
+        Task<int> GetCountAsync(ISpecifications<TEntity, TKey> spec);
         Task AddAsync(TEntity entity);
         void Update(TEntity entity);
         void Delete(TEntity entity);
