@@ -32,7 +32,9 @@ namespace Store.DEMO.APIs.MiddleWares
                     new ApiExceptionResponse(StatusCodes.Status500InternalServerError, ex.Message, ex?.StackTrace?.ToString())
                     : new ApiExceptionResponse(StatusCodes.Status500InternalServerError);
 
-                var json = JsonSerializer.Serialize(res);
+                var option = new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+
+                var json = JsonSerializer.Serialize(res, option);
                 await context.Response.WriteAsync(json);
             }
         }

@@ -1,4 +1,5 @@
 ﻿using Store.DEMO.Core.Entites;
+using Store.DEMO.Core.Entites.Order;
 using Store.DEMO.Repository.Data.Contexts;
 using System;
 using System.Collections.Generic;
@@ -49,7 +50,17 @@ namespace Store.DEMO.Repository
                     await _context.SaveChangesAsync();
                 }
             }
+            if (_context.DeliveryMethods.Count() == 0)
+            {
+                var deliveryData = File.ReadAllText(@"..\Store.DEMO.Repository\Data\DataSeed\delivery.json");
+                var deliveryMethods = JsonSerializer.Deserialize<List<DeliveryMethod>>(deliveryData);
 
+                if (deliveryMethods is not null && deliveryMethods.Count() > 0)
+                {
+                    await _context.DeliveryMethods.AddRangeAsync(deliveryMethods);
+                    await _context.SaveChangesAsync();
+                }
+            }
         }
     }
 }

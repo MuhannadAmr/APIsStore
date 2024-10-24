@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Store.DEMO.APIs.Attributes;
 using Store.DEMO.APIs.Errors;
 using Store.DEMO.Core.Dtos;
 using Store.DEMO.Core.Helper;
@@ -18,6 +20,8 @@ namespace Store.DEMO.APIs.Controllers
 
         [ProducesResponseType(typeof(PaginationResponse<ProductDto>) , StatusCodes.Status200OK)]
         [HttpGet] //GET BaseUrl/api/product
+        [Cached(100)]
+        [Authorize]
         public async Task<ActionResult<PaginationResponse<ProductDto>>> GetAllProduct([FromQuery] ProductSpecParams param)
         {
            var products = await _productService.GetAllProductsAsync(param);
@@ -25,8 +29,8 @@ namespace Store.DEMO.APIs.Controllers
         }
 
         [ProducesResponseType(typeof(IEnumerable<TypeBrandDto>), StatusCodes.Status200OK)]
-
         [HttpGet("brands")] // BaseUrl/api/product/brands
+        [Authorize]
         public async Task<ActionResult<IEnumerable<TypeBrandDto>>> GetAllBrands()
         {
             var brands = await _productService.GetAllBrandsAsync();
@@ -35,6 +39,7 @@ namespace Store.DEMO.APIs.Controllers
 
         [ProducesResponseType(typeof(IEnumerable<TypeBrandDto>), StatusCodes.Status200OK)]
         [HttpGet("types")] // BaseUrl/api/product/types
+        [Authorize]
         public async Task<ActionResult<IEnumerable<TypeBrandDto>>> GetAllTypes()
         {
             var types = await _productService.GetAllTypesAsync();
@@ -46,6 +51,7 @@ namespace Store.DEMO.APIs.Controllers
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<IActionResult> GetProductById(int? id)
         {
             if (id is null) return BadRequest(new ApiErrorResponse(400, "InValid id!!"));

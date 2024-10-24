@@ -2,6 +2,10 @@
 using Store.DEMO.Repository.Data.Contexts;
 using Store.DEMO.Repository;
 using Microsoft.EntityFrameworkCore;
+using Store.DEMO.Repository.Identity.Contexts;
+using Store.DEMO.Repository.Identity;
+using Microsoft.AspNetCore.Identity;
+using Store.DEMO.Core.Entites.Identity;
 
 namespace Store.DEMO.APIs.Helper
 {
@@ -12,12 +16,17 @@ namespace Store.DEMO.APIs.Helper
             using var scope = app.Services.CreateScope();
             var service = scope.ServiceProvider;
             var context = service.GetRequiredService<StoreDbContext>();
+            var identityContext = service.GetRequiredService<StoreIdentityDbContext>();
+            var userManager = service.GetRequiredService<UserManager<AppUser>>();
             var loggerFactory = service.GetRequiredService<ILoggerFactory>();
 
             try
             {
                 await context.Database.MigrateAsync();
                 await StoreDbContextSeed.SeedAsync(context);
+
+                await identityContext.Database.MigrateAsync();
+                await StoreIdentityDbContextSeed.SeedAppUserAsync(userManager);
             }
             catch (Exception ex)
             {
@@ -40,6 +49,7 @@ namespace Store.DEMO.APIs.Helper
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
