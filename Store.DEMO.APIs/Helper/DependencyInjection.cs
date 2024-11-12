@@ -22,6 +22,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Store.DEMO.Core.Mapping.Auth;
+using Store.DEMO.Core.Mapping.Orders;
+using Store.DEMO.Service.Services.Orders;
+using Store.DEMO.Service.Services.Baskets;
+using Store.DEMO.Service.Services.Payments;
 
 namespace Store.DEMO.APIs.Helper
 {
@@ -73,6 +77,7 @@ namespace Store.DEMO.APIs.Helper
             services.AddAutoMapper(M => M.AddProfile(new ProductProfile(configuration)));
             services.AddAutoMapper(M => M.AddProfile(new BasketProfile()));
             services.AddAutoMapper(M => M.AddProfile(new AddressProfile()));
+            services.AddAutoMapper(M => M.AddProfile(new OrdersProfile(configuration)));
 
             return services;
         }
@@ -83,7 +88,10 @@ namespace Store.DEMO.APIs.Helper
             services.AddScoped<ICacheService, CacheService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IBasketRepository, BasketRepository>();
+            services.AddScoped<IBasketService, BasketService>();
+            services.AddScoped<IPaymentService, PaymentService>();
             return services;
         }
         private static IServiceCollection ConfigureInvalidModelStateResponseService(this IServiceCollection services)
